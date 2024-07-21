@@ -1,0 +1,78 @@
+@Library('Shared') _
+pipeline {
+    agent {label 'Node'}
+    
+    parameters {
+        string(name: 'FRONTEND_DOCKER_TAG', defaultValue: '', description: 'Frontend Docker tag of the image built by the CI job')
+        string(name: 'BACKEND_DOCKER_TAG', defaultValue: '', description: 'Backend Docker tag of the image built by the CI job')
+    }
+
+    stages {
+        stage("Workspace cleanup"){
+            steps{
+                script{
+                    cleanWs()
+                }
+            }
+        }
+        
+        stage('Git: Code Checkout') {
+            steps {
+                script{
+                    code_checkout("https://github.com/DevMadhup/wanderlust.git","devops")
+                }
+            }
+        }
+        
+        stage('Verify: Docker Image Tags') {
+            steps {
+                script{
+                    echo "FRONTEND_DOCKER_TAG: ${params.FRONTEND_DOCKER_TAG}"
+                    echo "BACKEND_DOCKER_TAG: ${params.BACKEND_DOCKER_TAG}"
+                }
+            }
+        }
+        
+        
+        stage("Update: Kubernetes manifests"){
+            steps{
+                script{
+                    dir('kubernetes'){
+                        sh """
+                            sed -i -e 's/backend-wanderlust.*/backend-wanderlust:${params.BACKEND_DOCKER_TAG}/g' backend.yaml
+                        """
+                    }
+                    
+                    dir('kubernetes'){
+                        sh """
+                            sed -i -e 's/frontend-wanderlust.*/frontend-wanderlust:${params.FRONTEND_DOCKER_TAG}/g' frontend.yaml
+                        """
+                    }
+                    
+                }
+            }
+        }
+        
+        stage("Git: Code update and push to GitHub"){
+            steps{
+                script{
+                    withCredentials([gitUsernamePassword(credentialsId: 'Github-cred', gitToolName: 'Default')]) {
+                        sh '''
+                        echo "Checking repository status: "
+                        git status
+                        
+                        echo "Adding changes to git: "
+                        git add .
+                        
+                        echo "Commiting changes: "
+                        git commit -m "Updated environment variables"
+                        
+                        echo "Pushing changes to github: "
+                        git push https://github.com/DevMadhup/wanderlust.git devops
+                    '''
+                    }
+                }
+            }
+        }
+    }
+}
