@@ -21,7 +21,6 @@ echo -e " ${GREEN}System Public Ipv4 address ${NC} : ${ipv4_address}"
 if [[ "${alreadyUpdate}" == "FRONTEND_URL=\"http://${ipv4_address}:5173\"" ]]
 then
         echo -e "${YELLOW}${file_to_find} file is already updated to the current host's Ipv4 ${NC}"
-        exit -1;
 else
         if [ -f ${file_to_find} ]
         then
