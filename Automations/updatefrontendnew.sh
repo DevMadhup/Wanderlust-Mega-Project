@@ -19,7 +19,6 @@ echo -e " ${GREEN}System Public Ipv4 address ${NC} : ${ipv4_address}"
 if [[ "${alreadyUpdate}" == "VITE_API_PATH=\"http://${ipv4_address}:31100\"" ]]
 then
         echo -e "${YELLOW}${file_to_find} file is already updated to the current host's Ipv4 ${NC}"
-        exit -1;
 else
         if [ -f ${file_to_find} ]
         then
