@@ -23,6 +23,8 @@
 - <b>Install docker</b>
 ```bash
 sudo su
+```
+```bash
 apt update
 ```
 ```bash
