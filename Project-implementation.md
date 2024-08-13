@@ -64,21 +64,21 @@ sudo apt-get install trivy -y
   - <b>Create EKS Cluster</b>
   ```bash
   eksctl create cluster --name=wanderlust \
-                      --region=us-west-2 \
+                      --region=us-west-1 \
                       --version=1.30 \
                       --without-nodegroup
   ```
   - <b>Associate IAM OIDC Provider</b>
   ```bash
   eksctl utils associate-iam-oidc-provider \
-    --region us-west-2 \
+    --region us-west-1 \
     --cluster wanderlust \
     --approve
   ```
   - <b>Create Nodegroup</b>
   ```bash
   eksctl create nodegroup --cluster=wanderlust \
-                       --region=us-west-2 \
+                       --region=us-west-1 \
                        --name=wanderlust \
                        --node-type=t2.medium \
                        --nodes=2 \
@@ -88,6 +88,7 @@ sudo apt-get install trivy -y
                        --ssh-access \
                        --ssh-public-key=eks-nodegroup-key 
   ```
+#### Note: Make sure the ssh-public-key "eks-nodegroup-key is available in your aws account"
 #
 - <b>Install and Configure ArgoCD </b>
   - <b>Create argocd namespace</b>
