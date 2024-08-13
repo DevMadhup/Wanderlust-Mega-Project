@@ -162,6 +162,7 @@ sudo apt-get install trivy -y
   ```bash
   kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
   ```
+  - <b>Username: admin</b>
 #
 - <b>Setup jenkins worker node</b>
   - Create a new EC2 instance and install jenkins on it 
