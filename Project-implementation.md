@@ -149,6 +149,8 @@ sudo apt-get install trivy -y
   ```bash
   kubectl get svc -n argocd
   ```
+  - <b> Check the port where ArgoCD server is running and expose it on security groups</b>
+  ![image](https://github.com/user-attachments/assets/a2932e03-ebc7-42a6-9132-82638152197f)
   - <b>Fetch the initial password of argocd server</b>
   ```bash
   kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
