@@ -163,7 +163,7 @@ sudo apt-get install trivy -y
     - Usage: Only build jobs with label expressions matching this node
     - Launch method: Via ssh
     - Host: <public-ip-worker-jenkins>
-    - Credentials: Add --> Kind: ssh username with private key --> ID: Worker --> Description: Worker --> Username: root --> Private key: Enter directly --> Add Private key
+    - Credentials: <mark>Add --> Kind: ssh username with private key --> ID: Worker --> Description: Worker --> Username: root --> Private key: Enter directly --> Add Private key</mark>
     ![image](https://github.com/user-attachments/assets/1492fa3d-a83a-4164-b367-66d0b550f933)
     - Host Key Verification Strategy: Non verifying Verification Strategy
     - Availability: Keep this agent online as much as possible
