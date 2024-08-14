@@ -66,7 +66,7 @@ pipeline {
                     steps {
                         script{
                             dir("Automations"){
-                                sh "bash updateBackend.sh"
+                                sh "bash updatebackendnew.sh"
                             }
                         }
                     }
@@ -76,7 +76,7 @@ pipeline {
                     steps {
                         script{
                             dir("Automations"){
-                                sh "bash updateFrontend.sh"
+                                sh "bash updatebackendnew.sh"
                             }
                         }
                     }
@@ -105,15 +105,6 @@ pipeline {
                     docker_push("frontend-wanderlust","test-image-donot-use","madhupdevops")
                 }
             }
-        }
-    }
-    
-    post{
-        success{
-            build job: "Wanderlust-CD", parameters: [
-                string(name: 'FRONTEND_DOCKER_TAG', value: "test-image-donot-use"),
-                string(name: 'BACKEND_DOCKER_TAG', value: "test-image-donot-use")
-            ]
         }
     }
 }
