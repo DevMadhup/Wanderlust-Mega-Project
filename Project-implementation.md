@@ -18,7 +18,7 @@
 
 ### Pre-requisites to implement this project:
 #
-- <b>Create 1 virtual machine on AWS with 2 CPU, 4GB of RAM (t2.medium) and 29 GB of storage</b>
+- <b>Create 1 virtual machine on AWS with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage</b>
 #
 - <b>Install docker</b>
 ```bash
