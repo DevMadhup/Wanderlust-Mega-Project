@@ -1,6 +1,6 @@
 @Library('Shared') _
 pipeline {
-    agent {label 'Node'}
+    agent any
     
     parameters {
         string(name: 'FRONTEND_DOCKER_TAG', defaultValue: '', description: 'Frontend Docker tag of the image built by the CI job')
@@ -39,13 +39,13 @@ pipeline {
                 script{
                     dir('kubernetes'){
                         sh """
-                            sed -i -e 's/backend-wanderlust.*/backend-wanderlust:${params.BACKEND_DOCKER_TAG}/g' backend.yaml
+                            sed -i -e s/wanderlust-backend-beta.*/wanderlust-backend-beta:${params.BACKEND_DOCKER_TAG}/g backend.yaml
                         """
                     }
                     
                     dir('kubernetes'){
                         sh """
-                            sed -i -e 's/frontend-wanderlust.*/frontend-wanderlust:${params.FRONTEND_DOCKER_TAG}/g' frontend.yaml
+                            sed -i -e s/wanderlust-frontend-beta.*/wanderlust-frontend-beta:${params.FRONTEND_DOCKER_TAG}/g frontend.yaml
                         """
                     }
                     
@@ -68,7 +68,7 @@ pipeline {
                         git commit -m "Updated environment variables"
                         
                         echo "Pushing changes to github: "
-                        git push https://github.com/DevMadhup/wanderlust.git devops
+                        git push https://github.com/DevMadhup/Wanderlust-Mega-Project.git main
                     '''
                     }
                 }
