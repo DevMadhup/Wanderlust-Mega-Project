@@ -87,8 +87,8 @@ sudo apt-get install trivy -y
   sudo mv /tmp/eksctl /usr/local/bin
   eksctl version
   ```
-  
-  - Create one IAM role with "Administrator access" and attach it to the jenkins master instance
+> [!Important]
+> Create one IAM role with "Administrator access" and attach it to the jenkins master instance
 
   - <b>Create EKS Cluster</b>
   ```bash
@@ -117,7 +117,8 @@ sudo apt-get install trivy -y
                        --ssh-access \
                        --ssh-public-key=eks-nodegroup-key 
   ```
-#### Note: Make sure the ssh-public-key "eks-nodegroup-key is available in your aws account"
+> [!Note]
+>  Make sure the ssh-public-key "eks-nodegroup-key is available in your aws account"
 #
 - <b>Install and Configure ArgoCD </b>
   - <b>Create argocd namespace</b>
