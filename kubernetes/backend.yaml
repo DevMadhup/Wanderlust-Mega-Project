@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: madhupdevops/wanderlust-backend-beta:BACKEND_DOCKER_TAG
+          image: madhupdevops/wanderlust-backend-beta:v2.2.7
           ports:
             - containerPort: 8080
 ---
