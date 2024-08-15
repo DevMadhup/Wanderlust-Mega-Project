@@ -88,6 +88,8 @@ sudo apt-get install trivy -y
   eksctl version
   ```
   
+  - Create one IAM role with "Administrator access" and attach it to the jenkins master instance
+
   - <b>Create EKS Cluster</b>
   ```bash
   eksctl create cluster --name=wanderlust \
