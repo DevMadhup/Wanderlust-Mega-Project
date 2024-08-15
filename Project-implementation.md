@@ -2,7 +2,7 @@
 
 ### In this demo, we will see how to deploy an end to end three tier MERN stack application on EKS cluster.
 
-<a href="Install docker">Install Docker</a>
+[Install Docker](#install-docker)
 
 #
 ## Tech stack used in this project:
