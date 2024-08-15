@@ -87,6 +87,7 @@ sudo apt-get install trivy -y
   sudo mv /tmp/eksctl /usr/local/bin
   eksctl version
   ```
+  
   - <b>Create EKS Cluster</b>
   ```bash
   eksctl create cluster --name=wanderlust \
@@ -199,7 +200,7 @@ sudo apt-get install trivy -y
     - Labels: Node
     - Usage: Only build jobs with label expressions matching this node
     - Launch method: Via ssh
-    - Host: <public-ip-worker-jenkins>
+    - Host: \<public-ip-worker-jenkins\>
     - Credentials: <mark>Add --> Kind: ssh username with private key --> ID: Worker --> Description: Worker --> Username: root --> Private key: Enter directly --> Add Private key</mark>
     ![image](https://github.com/user-attachments/assets/1492fa3d-a83a-4164-b367-66d0b550f933)
     - Host Key Verification Strategy: Non verifying Verification Strategy
@@ -209,4 +210,53 @@ sudo apt-get install trivy -y
   ![image](https://github.com/user-attachments/assets/cab93696-a4e2-4501-b164-8287d7077eef)
 #
 ## Steps to implement the project:
+- <b>Login to AWS console and make the metadata option <mark>optional</mark> of both the worker ec2 instances</b>
+
+![image](https://github.com/user-attachments/assets/2da425cf-b349-4c44-b796-7b964ae5a3bd)
+![image](https://github.com/user-attachments/assets/226b3d47-2f10-4b2e-b360-de3dc19c8856)
+#
+- <b>Go to Jenkins Master and click on <mark> Manage Jenkins --> Plugins --> Available plugins</mark> install the below plugins:</b>
+  - SonarQube Scanner
+  - Docker
+![image](https://github.com/user-attachments/assets/6062c412-7d40-4170-8404-1e3056dfa669)
+#
+- <b>Login to SonarQube server and create the credentials for jenkins to integrate with SonarQube</b>
+  - Navigate to <mark>Administration --> Security --> Users --> Token</mark>
+  ![image](https://github.com/user-attachments/assets/86ad8284-5da6-4048-91fe-ac20c8e4514a)
+  ![image](https://github.com/user-attachments/assets/6bc671a5-c122-45c0-b1f0-f29999bbf751)
+  ![image](https://github.com/user-attachments/assets/e748643a-e037-4d4c-a9be-944995979c60)
+
+#
+- <b>Now, go to <mark> Manage Jenkins --> credentials</mark> and add Sonarqube credentials:</b>
+![image](https://github.com/user-attachments/assets/0688e105-2170-4c3f-87a3-128c1a05a0b8)
+#
+- <b>Go to <mark> Manage Jenkins --> Tools</mark> and search for SonarQube Scanner installations:</b>
+![image](https://github.com/user-attachments/assets/2fdc1e56-f78c-43d2-914a-104ec2c8ea86)
+#
+- <b>Go to <mark> Manage Jenkins --> System</mark> and search for SonarQube installations:</b>
+![image](https://github.com/user-attachments/assets/ae866185-cb2b-4e83-825b-a125ec97243a)
+#
+- <b>Now again, Go to <mark> Manage Jenkins --> System</mark> and search for Global Trusted Pipeline Libraries:</b
+![image](https://github.com/user-attachments/assets/874b2e03-49b9-4c26-9b0f-bd07ce70c0f1)
+![image](https://github.com/user-attachments/assets/1ca83b43-ce85-4970-941d-9a819ce4ecfd)
+#
+- <b>Login to SonarQube server, go to <mark>Administration --> Webhook</mark> and click on create </b>
+![image](https://github.com/user-attachments/assets/16527e72-6691-4fdf-a8d2-83dd27a085cb)
+![image](https://github.com/user-attachments/assets/a8b45948-766a-49a4-b779-91ac3ce0443c)
+#
+- <b>Now, go to github repository and under <mark>Automations</mark> directory update the <mark>instance-id</mark> field on both the <mark>updatefrontendnew.sh updatebackendnew.sh</mark> with the k8s worker's instance id</b>
+![image](https://github.com/user-attachments/assets/3cb044b4-df88-4d68-bf7c-775cf78d5bf2)
+#
+- <b>Navigate to <mark> Manage Jenkins --> credentials</mark> and add credentials for docker login to push docker image:</b>
+![image](https://github.com/user-attachments/assets/1a8287fc-b205-4156-8342-3f660f15e8fa)
+#
+- <b>
+#
+- <b>Create a pipeline</b>
+![image](https://github.com/user-attachments/assets/55c7b611-3c20-445f-a49c-7d779894e232)
+![image](https://github.com/user-attachments/assets/68ccb364-4926-4d4b-ad9b-f7abfdf9c99b)
+
+#
+
+
 
