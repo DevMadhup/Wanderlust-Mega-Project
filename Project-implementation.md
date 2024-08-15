@@ -2,7 +2,7 @@
 
 ### In this demo, we will see how to deploy an end to end three tier MERN stack application on EKS cluster.
 
-[Install and configure Jenkins](#Install-and-configure-Jenkins)
+<a href="#Install-and-configure-Jenkins">Install and configure Jenkins</a>
 
 #
 ## Tech stack used in this project:
@@ -34,7 +34,7 @@ apt install docker.io -y
 usermod -aG docker $USER && newgrp docker
 ```
 #
-- <b>Install and configure Jenkins</b>
+- <b id="Install-and-configure-Jenkins">Install and configure Jenkins</b>
 ```bash
 sudo apt update -y
 sudo apt install fontconfig openjdk-17-jre -y
