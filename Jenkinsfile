@@ -7,8 +7,8 @@ pipeline {
     }
     
     parameters {
-        string(name: 'FRONTEND_DOCKER_TAG', defaultValue: '', description: '')
-        string(name: 'BACKEND_DOCKER_TAG', defaultValue: '', description: '')
+        string(name: 'FRONTEND_DOCKER_TAG', defaultValue: '', description: 'Setting docker image for latest push')
+        string(name: 'BACKEND_DOCKER_TAG', defaultValue: '', description: 'Setting docker image for latest push')
     }
     
     stages {
