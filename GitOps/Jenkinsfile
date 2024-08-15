@@ -60,7 +60,7 @@ pipeline {
                         sh '''
                         echo "Checking repository status: "
                         git status
-                        
+                    
                         echo "Adding changes to git: "
                         git add .
                         
