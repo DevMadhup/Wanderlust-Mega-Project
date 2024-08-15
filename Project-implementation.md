@@ -99,7 +99,7 @@ sudo apt-get install trivy -y
   eksctl version
   ```
 > [!Important]
-> Create one IAM role with "Administrator access" and attach it to the jenkins master instance
+> Create one IAM role with "Administrator access" and attach it to the instance where your pipeline will be executed, For.eg. Jenkins Node.
 
   - <b>Create EKS Cluster</b>
   ```bash
