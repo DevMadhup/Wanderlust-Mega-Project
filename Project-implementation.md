@@ -2,7 +2,7 @@
 
 ### In this demo, we will see how to deploy an end to end three tier MERN stack application on EKS cluster.
 #
-> [!Note]
+> [!Important]
 > Below table helps you to navigate to the particular tool installation section fast.
 
 | Tech stack    | Installation |
