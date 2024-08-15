@@ -1,9 +1,18 @@
 # Wanderlust Mega Project End to End Implementation
 
 ### In this demo, we will see how to deploy an end to end three tier MERN stack application on EKS cluster.
+#
+> [!Note]
+> Below table helps you to navigate to the particular tool installation section fast.
 
-<a href="#Install-and-configure-Jenkins">Install and configure Jenkins</a>
-
+| Tech stack    | Installation |
+| -------- | ------- |
+| Docker  | <a href="#docker">Docker Install</a>    |
+| Jenkins | <a href="#Jenkins">Install and configure Jenkins</a>     |
+| SonarQube | <a href="#Sonar">Install and configure SonarQube</a>     |
+| eksctl | <a href="#EKS">Install eksctl</a>     |
+| Argocd | <a href="#Argo">Install and configure ArgoCD</a>     |
+| Jenkins-Worker Setup | <a href="#Jenkins-worker">Install and configure Jenkins Worker Node</a>     |
 #
 ## Tech stack used in this project:
 - GitHub (Code)
@@ -22,7 +31,7 @@
 #
 - <b>Create 1 virtual machine on AWS with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage</b>
 #
-- <b>Install docker</b>
+- <b id="docker">Install docker</b>
 ```bash
 sudo su
 ```
@@ -34,7 +43,7 @@ apt install docker.io -y
 usermod -aG docker $USER && newgrp docker
 ```
 #
-- <b id="Install-and-configure-Jenkins">Install and configure Jenkins</b>
+- <b id="Jenkins">Install and configure Jenkins</b>
 ```bash
 sudo apt update -y
 sudo apt install fontconfig openjdk-17-jre -y
@@ -50,12 +59,12 @@ sudo apt-get update -y
 sudo apt-get install jenkins -y
 ```
 #
-- <b>Install and configure SonarQube</b>
+- <b id="Sonar">Install and configure SonarQube</b>
 ```bash
 docker run -itd --name SonarQube-Server -p 9000:9000 sonarqube:lts-community
 ```
 #
-- <b>Install Trivy</b>
+- <b id="Trivy">Install Trivy</b>
 ```bash
 sudo apt-get install wget apt-transport-https gnupg lsb-release -y
 wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
@@ -64,7 +73,7 @@ sudo apt-get update -y
 sudo apt-get install trivy -y
 ```
 #
-- <b>Create EKS Cluster on AWS</b>
+- <b id="EKS">Create EKS Cluster on AWS</b>
   - IAM user with **access keys and secret access keys**
   - AWSCLI should be configured (<a href="https://github.com/DevMadhup/DevOps-Tools-Installations/blob/main/AWSCLI/AWSCLI.sh">Setup AWSCLI</a>)
   ```bash
@@ -122,7 +131,7 @@ sudo apt-get install trivy -y
 > [!Note]
 >  Make sure the ssh-public-key "eks-nodegroup-key is available in your aws account"
 #
-- <b>Install and Configure ArgoCD </b>
+- <b id="Argo">Install and Configure ArgoCD </b>
   - <b>Create argocd namespace</b>
   ```bash
   kubectl create namespace argocd
@@ -170,7 +179,7 @@ sudo apt-get install trivy -y
   ```
   - <b>Username: admin</b>
 #
-- <b>Setup jenkins worker node</b>
+- <b id="Jenkins-worker">Setup jenkins worker node</b>
   - Create a new EC2 instance and install jenkins on it 
   ```bash
   sudo apt update -y
