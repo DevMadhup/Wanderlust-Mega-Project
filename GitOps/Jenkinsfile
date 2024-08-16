@@ -79,12 +79,12 @@ pipeline {
         always {
             script {
                 def subject = "Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult} - ${env.JOB_NAME}"
-                def body = '''
+                def body = """
                 <p><b>Job Name:</b> ${env.JOB_NAME}</p>
                 <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
                 <p><b>Build Status:</b> ${currentBuild.currentResult}</p>
                 <p><b>Build URL:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                '''
+                """
 
                 emailext(
                     subject: subject,
