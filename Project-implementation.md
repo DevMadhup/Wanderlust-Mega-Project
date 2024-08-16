@@ -272,6 +272,68 @@ sudo apt-get install trivy -y
 ![image](https://github.com/user-attachments/assets/23f84a93-901b-45e3-b4e8-a12cbed13986)
 ![image](https://github.com/user-attachments/assets/ac79f7e6-c02c-4431-bb3b-5c7489a93a63)
 ![image](https://github.com/user-attachments/assets/46a5937f-e06e-4265-ac0f-42543576a5cd)
+#
+- <b>Provide permission to docker socket so that docker build and push command do not fail</b>
+```bash
+chmod 777 /var/run/docker.sock
+```
+![image](https://github.com/user-attachments/assets/e231c62a-7adb-4335-b67e-480758713dbf)
+#
+- <b> Go to Master node and add our own eks cluster to argocd using cli</b>
+  - <b>Login to argoCD from CLI</b>
+  ```bash
+   argocd login 52.53.156.187:32738 --username admin
+  ```
+> [!Tip]
+> 52.53.156.187:32738 --> This should be your argocd url
+
+  ![image](https://github.com/user-attachments/assets/7d05e5ca-1a16-4054-a321-b99270ca0bf9)
+
+  - <b>Check how many clusters are available in argocd </b>
+  ```bash
+  argocd cluster list
+  ```
+  ![image](https://github.com/user-attachments/assets/76fe7a45-e05c-422d-9652-bdaee02d630f)
+  - <b>Get your cluster name</b>
+  ```bash
+  kubectl config get-contexts
+  ```
+  ![image](https://github.com/user-attachments/assets/4cab99aa-cef3-45f6-9150-05004c2f09f8)
+  - <b>Add your cluster to argocd</b>
+  ```bash
+  argocd cluster add Wanderlust@wanderlust.us-west-1.eksctl.io --name wanderlust-eks-cluster
+  ```
+  > [!Tip]
+  > Wanderlust@wanderlust.us-west-1.eksctl.io --> This should be your EKS Cluster Name.
+
+  ![image](https://github.com/user-attachments/assets/0f36aafd-bab9-4ef8-ba5d-3eb56d850604)
+  - <b> Once your cluster is added to argocd, go to argocd console <mark>Settings --> Clusters</mark> and verify it</b>
+  ![image](https://github.com/user-attachments/assets/4490b632-19fd-4499-a341-fabf8488d13c)
+#
+- <b>Now, login to ArgoCD and go to <mark>User Info</mark> and change your login password </b>
+#
+- <b>Go to <mark>Settings --> Repositories</mark> and click on <mark>Connect repo</mark> </b>
+![image](https://github.com/user-attachments/assets/cc8728e5-546b-4c46-bd4c-538f4cd6a63d)
+![image](https://github.com/user-attachments/assets/eb3646e2-db84-4439-a11a-d4168080d9cc)
+![image](https://github.com/user-attachments/assets/a07f8703-5ef3-4524-aaa7-39a139335eb7)
+> [!Note]
+> Connection should be successful
+
+- <b>Now, go to <mark>Applications</mark> and click on <mark>New App</mark></b>
+![image](https://github.com/user-attachments/assets/ec2d7a51-d78f-4947-a90b-258944ad59a2)
+![image](https://github.com/user-attachments/assets/55dcd3c2-5424-4efb-9bee-1c12bbf7f158)
+![image](https://github.com/user-attachments/assets/3e2468ff-8cb2-4bda-a8cc-0742cd6d0cae)
+
+- <b>Congratulations, your application is deployed on AWS EKS Cluster</b>
+![image](https://github.com/user-attachments/assets/bc2d9680-fe00-49f9-81bf-93c5595c20cc)
+![image](https://github.com/user-attachments/assets/1ea9d486-656e-40f1-804d-2651efb54cf6)
+- <b>Open port 31000 and 31100 on worker node and Access it on browser</b>
+```bash
+<worker-public-ip>:31000
+```
+![image](https://github.com/user-attachments/assets/a4b2a4b4-e1aa-4b22-ac6b-f40003d0723a)
+![image](https://github.com/user-attachments/assets/06f9f1c8-094d-4d9f-a9d8-256fb18a9ae4)
+![image](https://github.com/user-attachments/assets/64394f90-8610-44c0-9f63-c3a21eb78f55)
 
 #
 
