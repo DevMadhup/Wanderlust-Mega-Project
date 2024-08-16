@@ -75,19 +75,16 @@ pipeline {
             }
         }
     }
-
-    post {
-    success {
-        emailext (
-            subject: "BUILD $BUILD_STATUS: Job '${JOB_NAME}' - Build # ${BUILD_NUMBER}",
-            body: """
+  post {
+        always {
+            script {
                 def subject = "Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult} - ${env.JOB_NAME}"
-                def body = """
+                def body = '''
                 <p><b>Job Name:</b> ${env.JOB_NAME}</p>
                 <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
                 <p><b>Build Status:</b> ${currentBuild.currentResult}</p>
                 <p><b>Build URL:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                """
+                '''
 
                 emailext(
                     subject: subject,
@@ -96,10 +93,7 @@ pipeline {
                     from: 'jenkins@example.com',
                     mimeType: 'text/html'
                 )
-            """,
-            to: '8007930568pandey@gmail.com'
-        )
+            }
+        }
     }
-}
-
 }
