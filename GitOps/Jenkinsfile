@@ -83,13 +83,11 @@ pipeline {
             body: """
                 <html>
                     <body>
-                    <h2 style="font-weight: bold;">Build Details:</h2>
+                    <h2 style='font-weight: bold;'>Build Details:</h2>
                     <ul>
                     <li>Build Number: ${BUILD_NUMBER}</li>
                     <li>Project Name: ${JOB_NAME}</li>
                     <li>Build URL: <a href='${BUILD_URL}'>${BUILD_URL}</a></li>
-                    <li>Changes:</li>
-                    <pre>${CHANGES, showPaths=true, format="%a: %r %p %m"}</pre>
                     </ul>
                     </body>
                 </html>
@@ -104,13 +102,11 @@ pipeline {
             body: """
                 <html>
                     <body>
-                    <h2 style="font-weight: bold;">Build Details:</h2>
+                    <h2 style='font-weight: bold;'>Build Details:</h2>
                     <ul>
                     <li>Build Number: ${BUILD_NUMBER}</li>
                     <li>Project Name: ${JOB_NAME}</li>
                     <li>Build URL: <a href='${BUILD_URL}'>${BUILD_URL}</a></li>
-                    <li>Changes:</li>
-                    <pre>${CHANGES, showPaths=true, format="%a: %r %p %m"}</pre>
                     </ul>
                     </body>
                 </html>
@@ -125,13 +121,11 @@ pipeline {
             body: """
                 <html>
                     <body>
-                    <h2 style="font-weight: bold;">Build Details:</h2>
+                    <h2 style='font-weight: bold;'>Build Details:</h2>
                     <ul>
                     <li>Build Number: ${BUILD_NUMBER}</li>
                     <li>Project Name: ${JOB_NAME}</li>
                     <li>Build URL: <a href='${BUILD_URL}'>${BUILD_URL}</a></li>
-                    <li>Changes:</li>
-                    <pre>${CHANGES, showPaths=true, format="%a: %r %p %m"}</pre>
                     </ul>
                     </body>
                 </html>
