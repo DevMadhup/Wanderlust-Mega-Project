@@ -53,7 +53,7 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 - <b>Create 1 virtual machine on AWS with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage</b>
 #
 - <b id="Jenkins-worker">Setup jenkins worker node</b>
-  - Create a new EC2 instance and install java on it
+  - Create a new EC2 instance with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage and install java on it
 > [!Important]
 > Create one IAM role with "Administrator access" and attach it to the instance where your pipeline will be executed, For.eg. Jenkins Node.
 >  
@@ -179,7 +179,7 @@ sudo apt-get install trivy -y
   eksctl create nodegroup --cluster=wanderlust \
                        --region=us-west-1 \
                        --name=wanderlust \
-                       --node-type=t2.medium \
+                       --node-type=t2.large \
                        --nodes=2 \
                        --nodes-min=2 \
                        --nodes-max=2 \
