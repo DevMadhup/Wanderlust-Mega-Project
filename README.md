@@ -10,6 +10,19 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 
 ### In this demo, we will see how to deploy an end to end three tier MERN stack application on EKS cluster.
 #
+
+## Tech stack used in this project:
+- GitHub (Code)
+- Docker (Containerization)
+- Jenkins (CI)
+- SonarQube (Quality)
+- Trivy (Filesystem Scan)
+- ArgoCD (CD)
+- Redis
+- AWS EKS (Kubernetes)
+  - Deployments
+  - Services
+
 ### Demo of pipeline
 - <b>CI pipeline to build and push</b>
 ![image](https://github.com/user-attachments/assets/20542d8b-0701-43ed-b2f8-82f8ed28d053)
@@ -36,18 +49,6 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 | Email Notification Setup | <a href="#Mail">Email notification setup</a>     |
 | Clean Up | <a href="#Clean">Clean up</a>     |
 #
-## Tech stack used in this project:
-- GitHub (Code)
-- Docker (Containerization)
-- Jenkins (CI)
-- SonarQube (Quality)
-- Trivy (Filesystem Scan)
-- ArgoCD (CD)
-- Redis
-- AWS EKS (Kubernetes)
-  - Deployments
-  - Services
-  - Ingress 
 
 ### Pre-requisites to implement this project:
 #
