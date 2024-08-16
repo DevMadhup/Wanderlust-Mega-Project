@@ -370,6 +370,12 @@ chmod 777 /var/run/docker.sock
 ![image](https://github.com/user-attachments/assets/0ab1ef47-f939-4618-8651-6aa9274721f4)
 
 #
+## Clean Up
+- <b>Delete eks cluster</b>
+```bash
+eksctl delete cluster --name=wanderlust --region=us-west-1
+```
+#
 
 
 
