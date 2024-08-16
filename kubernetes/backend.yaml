@@ -28,11 +28,9 @@ metadata:
   name: backend-service
   namespace: wanderlust
 spec:
-  type: NodePort
   selector:
     app: backend
   ports:
     - port: 8080
       targetPort: 8080
       protocol: TCP
-      nodePort: 31100
