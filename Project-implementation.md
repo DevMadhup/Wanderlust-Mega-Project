@@ -14,6 +14,7 @@
 | Argocd | <a href="#Argo">Install and configure ArgoCD</a>     |
 | Jenkins-Worker Setup | <a href="#Jenkins-worker">Install and configure Jenkins Worker Node</a>     |
 | Email Notification Setup | <a href="#Mail">Email notification setup</a>     |
+| Clean Up | <a href="#Clean">Clean up</a>     |
 #
 ## Tech stack used in this project:
 - GitHub (Code)
@@ -371,7 +372,7 @@ chmod 777 /var/run/docker.sock
 
 #
 ## Clean Up
-- <b>Delete eks cluster</b>
+- <b id="Clean">Delete eks cluster</b>
 ```bash
 eksctl delete cluster --name=wanderlust --region=us-west-1
 ```
