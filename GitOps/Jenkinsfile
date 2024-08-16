@@ -81,54 +81,21 @@ pipeline {
         emailext (
             subject: "BUILD $BUILD_STATUS: Job '${JOB_NAME}' - Build # ${BUILD_NUMBER}",
             body: """
-                <html>
-                    <body>
-                    <h2 style='font-weight: bold;'>Build Details:</h2>
-                    <ul>
-                    <li>Build Number: ${BUILD_NUMBER}</li>
-                    <li>Project Name: ${JOB_NAME}</li>
-                    <li>Build URL: <a href='${BUILD_URL}'>${BUILD_URL}</a></li>
-                    </ul>
-                    </body>
-                </html>
-            """,
-            to: '8007930568pandey@gmail.com'
-        )
-    }
+                def subject = "Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult} - ${env.JOB_NAME}"
+                def body = """
+                <p><b>Job Name:</b> ${env.JOB_NAME}</p>
+                <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
+                <p><b>Build Status:</b> ${currentBuild.currentResult}</p>
+                <p><b>Build URL:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                """
 
-    failure {
-        emailext (
-            subject: "BUILD $BUILD_STATUS: Job '${JOB_NAME}' - Build # ${BUILD_NUMBER}",
-            body: """
-                <html>
-                    <body>
-                    <h2 style='font-weight: bold;'>Build Details:</h2>
-                    <ul>
-                    <li>Build Number: ${BUILD_NUMBER}</li>
-                    <li>Project Name: ${JOB_NAME}</li>
-                    <li>Build URL: <a href='${BUILD_URL}'>${BUILD_URL}</a></li>
-                    </ul>
-                    </body>
-                </html>
-            """,
-            to: '8007930568pandey@gmail.com'
-        )
-    }
-
-    unstable {
-        emailext (
-            subject: "BUILD $BUILD_STATUS: Job '${JOB_NAME}' - Build # ${BUILD_NUMBER}",
-            body: """
-                <html>
-                    <body>
-                    <h2 style='font-weight: bold;'>Build Details:</h2>
-                    <ul>
-                    <li>Build Number: ${BUILD_NUMBER}</li>
-                    <li>Project Name: ${JOB_NAME}</li>
-                    <li>Build URL: <a href='${BUILD_URL}'>${BUILD_URL}</a></li>
-                    </ul>
-                    </body>
-                </html>
+                emailext(
+                    subject: subject,
+                    body: body,
+                    to: 'recipient@example.com',
+                    from: 'jenkins@example.com',
+                    mimeType: 'text/html'
+                )
             """,
             to: '8007930568pandey@gmail.com'
         )
