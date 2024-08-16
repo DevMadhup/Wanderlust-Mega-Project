@@ -31,6 +31,46 @@
 #
 - <b>Create 1 virtual machine on AWS with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage</b>
 #
+- <b id="Jenkins-worker">Setup jenkins worker node</b>
+  - Create a new EC2 instance and install java on it
+> [!Important]
+> Create one IAM role with "Administrator access" and attach it to the instance where your pipeline will be executed, For.eg. Jenkins Node.
+>  
+  ```bash
+  sudo apt update -y
+  sudo apt install fontconfig openjdk-17-jre -y
+  ```
+#
+  - <b>ssh to jenkins worker and generate ssh keys</b>
+  ```bash
+  ssh-keygen
+  ```
+  ![image](https://github.com/user-attachments/assets/0c8ecb74-1bc5-46f9-ad55-1e22e8092198)
+#
+  - <b>Now move to /root/.ssh/ directory and copy the content of public key and paste to /root/.ssh/authorized_keys file.</b>
+#
+  - <b>Now, go to the jenkins master and navigate to <mark>Manage jenkins --> Nodes</mark>, and click on Add node </b>
+    - name: Node
+    - type: permanent agent
+    - Number of executors: 1
+    ![image](https://github.com/user-attachments/assets/8fa59360-f7c3-4267-bf63-aa932ba1500e)
+    - Remote root directory
+    ![image](https://github.com/user-attachments/assets/28651dda-8675-4af8-ab08-dc858ac8c589)
+    - Labels: Node
+    - Usage: Only build jobs with label expressions matching this node
+    - Launch method: Via ssh
+    - Host: \<public-ip-worker-jenkins\>
+    - Credentials: <mark>Add --> Kind: ssh username with private key --> ID: Worker --> Description: Worker --> Username: root --> Private key: Enter directly --> Add Private key</mark>
+    ![image](https://github.com/user-attachments/assets/1492fa3d-a83a-4164-b367-66d0b550f933)
+    - Host Key Verification Strategy: Non verifying Verification Strategy
+    - Availability: Keep this agent online as much as possible
+#
+  - And your jenkins worker node is added
+  ![image](https://github.com/user-attachments/assets/cab93696-a4e2-4501-b164-8287d7077eef)
+
+#
+> [!Warning]
+> Below tools must be installed on <mark>Jenkins Worker</mark>. 
 - <b id="docker">Install docker</b>
 ```bash
 sudo su
@@ -177,53 +217,6 @@ sudo apt-get install trivy -y
   ```
   - <b>Username: admin</b>
 #
-- <b id="Jenkins-worker">Setup jenkins worker node</b>
-  - Create a new EC2 instance and install jenkins on it
-> [!Important]
-> Create one IAM role with "Administrator access" and attach it to the instance where your pipeline will be executed, For.eg. Jenkins Node.
->  
-  ```bash
-  sudo apt update -y
-  sudo apt install fontconfig openjdk-17-jre -y
-
-  sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
-  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
-  
-  echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
-  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
-  /etc/apt/sources.list.d/jenkins.list > /dev/null
-  
-  sudo apt-get update -y
-  sudo apt-get install jenkins -y
-  ```
-#
-  - <b>ssh to jenkins worker and generate ssh keys</b>
-  ```bash
-  ssh-keygen
-  ```
-  ![image](https://github.com/user-attachments/assets/0c8ecb74-1bc5-46f9-ad55-1e22e8092198)
-#
-  - <b>Now move to /root/.ssh/ directory and copy the content of public key and paste to /root/.ssh/authorized_keys file.</b>
-#
-  - <b>Now, go to the jenkins master and navigate to <mark>Manage jenkins --> Nodes</mark>, and click on Add node </b>
-    - name: Node
-    - type: permanent agent
-    - Number of executors: 1
-    ![image](https://github.com/user-attachments/assets/8fa59360-f7c3-4267-bf63-aa932ba1500e)
-    - Remote root directory
-    ![image](https://github.com/user-attachments/assets/28651dda-8675-4af8-ab08-dc858ac8c589)
-    - Labels: Node
-    - Usage: Only build jobs with label expressions matching this node
-    - Launch method: Via ssh
-    - Host: \<public-ip-worker-jenkins\>
-    - Credentials: <mark>Add --> Kind: ssh username with private key --> ID: Worker --> Description: Worker --> Username: root --> Private key: Enter directly --> Add Private key</mark>
-    ![image](https://github.com/user-attachments/assets/1492fa3d-a83a-4164-b367-66d0b550f933)
-    - Host Key Verification Strategy: Non verifying Verification Strategy
-    - Availability: Keep this agent online as much as possible
-#
-  - And your jenkins worker node is added
-  ![image](https://github.com/user-attachments/assets/cab93696-a4e2-4501-b164-8287d7077eef)
-#
 ## Steps to implement the project:
 - <b>Login to AWS console and make the metadata option <mark>optional</mark> of both the worker ec2 instances</b>
 
@@ -271,9 +264,14 @@ sudo apt-get install trivy -y
 - <b>Navigate to <mark> Manage Jenkins --> credentials</mark> and add credentials for docker login to push docker image:</b>
 ![image](https://github.com/user-attachments/assets/1a8287fc-b205-4156-8342-3f660f15e8fa)
 #
-- <b>Create a pipeline</b>
+- <b>Create a <mark>Wanderlust-CI</mark> pipeline</b>
 ![image](https://github.com/user-attachments/assets/55c7b611-3c20-445f-a49c-7d779894e232)
 ![image](https://github.com/user-attachments/assets/68ccb364-4926-4d4b-ad9b-f7abfdf9c99b)
+#
+- <b>Create one more pipeline <mark>Wanderlust-CD</mark></b>
+![image](https://github.com/user-attachments/assets/23f84a93-901b-45e3-b4e8-a12cbed13986)
+![image](https://github.com/user-attachments/assets/ac79f7e6-c02c-4431-bb3b-5c7489a93a63)
+![image](https://github.com/user-attachments/assets/46a5937f-e06e-4265-ac0f-42543576a5cd)
 
 #
 
