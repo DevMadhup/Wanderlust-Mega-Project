@@ -89,8 +89,8 @@ pipeline {
                 emailext(
                     subject: subject,
                     body: body,
-                    to: 'recipient@example.com',
-                    from: 'jenkins@example.com',
+                    to: '8007930568pandey@gmail.com',
+                    from: '8007930568pandey@gmail.com',
                     mimeType: 'text/html'
                 )
             }
