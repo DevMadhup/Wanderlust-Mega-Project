@@ -98,9 +98,7 @@ sudo apt-get install trivy -y
   sudo mv /tmp/eksctl /usr/local/bin
   eksctl version
   ```
-> [!Important]
-> Create one IAM role with "Administrator access" and attach it to the instance where your pipeline will be executed, For.eg. Jenkins Node.
-
+  
   - <b>Create EKS Cluster</b>
   ```bash
   eksctl create cluster --name=wanderlust \
@@ -180,7 +178,10 @@ sudo apt-get install trivy -y
   - <b>Username: admin</b>
 #
 - <b id="Jenkins-worker">Setup jenkins worker node</b>
-  - Create a new EC2 instance and install jenkins on it 
+  - Create a new EC2 instance and install jenkins on it
+> [!Important]
+> Create one IAM role with "Administrator access" and attach it to the instance where your pipeline will be executed, For.eg. Jenkins Node.
+>  
   ```bash
   sudo apt update -y
   sudo apt install fontconfig openjdk-17-jre -y
