@@ -233,6 +233,7 @@ sudo apt-get install trivy -y
 - <b>Go to Jenkins Master and click on <mark> Manage Jenkins --> Plugins --> Available plugins</mark> install the below plugins:</b>
   - SonarQube Scanner
   - Docker
+  - Pipeline: Stage View
 ![image](https://github.com/user-attachments/assets/6062c412-7d40-4170-8404-1e3056dfa669)
 #
 - <b>Login to SonarQube server and create the credentials for jenkins to integrate with SonarQube</b>
