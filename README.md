@@ -20,8 +20,6 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 - ArgoCD (CD)
 - Redis
 - AWS EKS (Kubernetes)
-  - Deployments
-  - Services
 
 ### Demo of pipeline
 - <b>CI pipeline to build and push</b>
