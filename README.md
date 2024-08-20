@@ -56,7 +56,7 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 > [!Note]
 > This project will be implemented on North California region (us-west-1).
 
-- <b>Create 1 virtual Master machine on AWS with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage and install jenkins on it.</b>
+- <b>Create 1 Master machine on AWS with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage and install jenkins on it.</b>
 #
 - <b id="Jenkins-worker">Setup jenkins worker node</b>
   - Create a new EC2 instance with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage and install java on it
