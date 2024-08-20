@@ -53,12 +53,15 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 
 ### Pre-requisites to implement this project:
 #
-- <b>Create 1 virtual machine on AWS with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage</b>
+> [!Note]
+> This project will be implemented on North California region (us-west-1).
+
+- <b>Create 1 virtual Master machine on AWS with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage and install jenkins on it.</b>
 #
 - <b id="Jenkins-worker">Setup jenkins worker node</b>
   - Create a new EC2 instance with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage and install java on it
 > [!Important]
-> Create one IAM role with "Administrator access" and attach it to the instance where your pipeline will be executed, For.eg. Jenkins Node.
+> Create one IAM role with "Administrator access" and attach it to your jenkins worker node.
 >  
   ```bash
   sudo apt update -y
@@ -71,7 +74,7 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
   ```
   ![image](https://github.com/user-attachments/assets/0c8ecb74-1bc5-46f9-ad55-1e22e8092198)
 #
-  - <b>Now move to /root/.ssh/ directory and copy the content of public key and paste to /root/.ssh/authorized_keys file.</b>
+  - <b>Now move to directory where your ssh keys are generated and copy the content of public key and paste to authorized_keys file of the worker machine.</b>
 #
   - <b>Now, go to the jenkins master and navigate to <mark>Manage jenkins --> Nodes</mark>, and click on Add node </b>
     - name: Node
