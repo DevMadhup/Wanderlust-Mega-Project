@@ -41,14 +41,15 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 
 | Tech stack    | Installation |
 | -------- | ------- |
+| Jenkins-Worker Setup | <a href="#Jenkins-worker">Install and configure Jenkins Worker Node</a>     |
 | Docker  | <a href="#docker">Docker Install</a>    |
-| Jenkins | <a href="#Jenkins">Install and configure Jenkins</a>     |
+| Jenkins Master | <a href="#Jenkins">Install and configure Jenkins</a>     |
 | SonarQube | <a href="#Sonar">Install and configure SonarQube</a>     |
 | eksctl | <a href="#EKS">Install eksctl</a>     |
 | Argocd | <a href="#Argo">Install and configure ArgoCD</a>     |
-| Jenkins-Worker Setup | <a href="#Jenkins-worker">Install and configure Jenkins Worker Node</a>     |
 | Email Notification Setup | <a href="#Mail">Email notification setup</a>     |
 | Clean Up | <a href="#Clean">Clean up</a>     |
+| OWASP setup | <a href="#Owasp">Install and configure OWASP</a>     |
 #
 
 ### Pre-requisites to implement this project:
