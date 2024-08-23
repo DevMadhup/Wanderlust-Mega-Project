@@ -1,0 +1,5 @@
+FROM mongo
+
+COPY data/*  .
+
+ENTRYPOINT ["mongod"]
