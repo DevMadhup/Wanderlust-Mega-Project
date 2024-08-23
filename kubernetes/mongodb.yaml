@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: mongo
-          image: madhupdevops/wanderlust-database-beta:latest
+          image: mongo
           ports:
             - containerPort: 27017
           volumeMounts:
