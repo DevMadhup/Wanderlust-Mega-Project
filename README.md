@@ -201,7 +201,7 @@ apt install docker.io -y
 usermod -aG docker ubuntu && newgrp docker
 ```
 #
-- <b id="Sonar">Install and configure SonarQube (Jenkins Worker)</b>
+- <b id="Sonar">Install and configure SonarQube (Master machine)</b>
 ```bash
 docker run -itd --name SonarQube-Server -p 9000:9000 sonarqube:lts-community
 ```
