@@ -42,11 +42,11 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 
 | Tech stack    | Installation |
 | -------- | ------- |
-| Jenkins-Worker Setup | <a href="#Jenkins-worker">Install and configure Jenkins Worker Node</a>     |
 | Docker  | <a href="#docker">Docker Install</a>    |
-| Jenkins Master | <a href="#Jenkins">Install and configure Jenkins</a>     |
-| SonarQube | <a href="#Sonar">Install and configure SonarQube</a>     |
 | eksctl | <a href="#EKS">Install eksctl</a>     |
+| Jenkins Master | <a href="#Jenkins">Install and configure Jenkins</a>     |
+| Jenkins-Worker Setup | <a href="#Jenkins-worker">Install and configure Jenkins Worker Node</a>     |
+| SonarQube | <a href="#Sonar">Install and configure SonarQube</a>     |
 | Argocd | <a href="#Argo">Install and configure ArgoCD</a>     |
 | Email Notification Setup | <a href="#Mail">Email notification setup</a>     |
 | Clean Up | <a href="#Clean">Clean up</a>     |
@@ -58,61 +58,21 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 > [!Note]
 > This project will be implemented on North California region (us-west-1).
 
-- <b>Create 1 Master machine on AWS with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage and install jenkins on it.</b>
-#
-- <b id="Jenkins-worker">Setup jenkins worker node</b>
-  - Create a new EC2 instance with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage and install java on it
-> [!Important]
-> Create one IAM role with "Administrator access" and attach it to your jenkins worker node.
->  
-  ```bash
-  sudo apt update -y
-  sudo apt install fontconfig openjdk-17-jre -y
-  ```
-#
-  - <b>ssh to jenkins worker and generate ssh keys</b>
-  ```bash
-  ssh-keygen
-  ```
-  ![image](https://github.com/user-attachments/assets/0c8ecb74-1bc5-46f9-ad55-1e22e8092198)
-#
-  - <b>Now move to directory where your ssh keys are generated and copy the content of public key and paste to authorized_keys file of the worker machine.</b>
-#
-  - <b>Now, go to the jenkins master and navigate to <mark>Manage jenkins --> Nodes</mark>, and click on Add node </b>
-    - name: Node
-    - type: permanent agent
-    - Number of executors: 1
-    ![image](https://github.com/user-attachments/assets/8fa59360-f7c3-4267-bf63-aa932ba1500e)
-    - Remote root directory
-    ![image](https://github.com/user-attachments/assets/28651dda-8675-4af8-ab08-dc858ac8c589)
-    - Labels: Node
-    - Usage: Only build jobs with label expressions matching this node
-    - Launch method: Via ssh
-    - Host: \<public-ip-worker-jenkins\>
-    - Credentials: <mark>Add --> Kind: ssh username with private key --> ID: Worker --> Description: Worker --> Username: root --> Private key: Enter directly --> Add Private key</mark>
-    ![image](https://github.com/user-attachments/assets/1492fa3d-a83a-4164-b367-66d0b550f933)
-    - Host Key Verification Strategy: Non verifying Verification Strategy
-    - Availability: Keep this agent online as much as possible
-#
-  - And your jenkins worker node is added
-  ![image](https://github.com/user-attachments/assets/cab93696-a4e2-4501-b164-8287d7077eef)
+- <b>Create 1 Master machine on AWS with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage and install Docker on it.</b>
 
-#
-> [!Warning]
-> Below tools must be installed on <mark>Jenkins Worker</mark>. 
-- <b id="docker">Install docker</b>
+> [!Note]
+> We are creating this master machine because we will configure Jenkins master, eksctl, EKS cluster creation from here.
+
 ```bash
 sudo su
+apt-get update
 ```
 ```bash
-apt update
-```
-```bash
-apt install docker.io -y
-usermod -aG docker $USER && newgrp docker
+apt-get install docker.io -y
+usermod -aG docker ubuntu && newgrp docker
 ```
 #
-- <b id="Jenkins">Install and configure Jenkins</b>
+- <b id="Jenkins">Install and configure Jenkins (Master machine)</b>
 ```bash
 sudo apt update -y
 sudo apt install fontconfig openjdk-17-jre -y
@@ -127,29 +87,9 @@ echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
 sudo apt-get update -y
 sudo apt-get install jenkins -y
 ```
+- <b>Now, access Jenkins Master on the browser on port 8080 and configure it</b>.
 #
-- <b id="Owasp">Configure OWASP, move to <mark>Manage Jenkins --> Plugins --> Available plugins</mark></b>
-![image](https://github.com/user-attachments/assets/da6a26d3-f742-4ea8-86b7-107b1650a7c2)
-
-- <b id="Sonar">After OWASP plugin is installed, Now move to <mark>Manage jenkins --> Tools</mark></b>
-![image](https://github.com/user-attachments/assets/3b8c3f20-202e-4864-b3b6-b48d7a604ee8)
-
-#
-- <b id="Sonar">Install and configure SonarQube</b>
-```bash
-docker run -itd --name SonarQube-Server -p 9000:9000 sonarqube:lts-community
-```
-#
-- <b id="Trivy">Install Trivy</b>
-```bash
-sudo apt-get install wget apt-transport-https gnupg lsb-release -y
-wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
-sudo apt-get update -y
-sudo apt-get install trivy -y
-```
-#
-- <b id="EKS">Create EKS Cluster on AWS</b>
+- <b id="EKS">Create EKS Cluster on AWS (Master machine)</b>
   - IAM user with **access keys and secret access keys**
   - AWSCLI should be configured (<a href="https://github.com/DevMadhup/DevOps-Tools-Installations/blob/main/AWSCLI/AWSCLI.sh">Setup AWSCLI</a>)
   ```bash
@@ -160,7 +100,7 @@ sudo apt-get install trivy -y
   aws configure
   ```
 
-  - Install **kubectl** (<a href="https://github.com/DevMadhup/DevOps-Tools-Installations/blob/main/Kubectl/Kubectl.sh">Setup kubectl</a>)
+  - Install **kubectl** (Master machine)(<a href="https://github.com/DevMadhup/DevOps-Tools-Installations/blob/main/Kubectl/Kubectl.sh">Setup kubectl </a>)
   ```bash
   curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
   chmod +x ./kubectl
@@ -168,28 +108,28 @@ sudo apt-get install trivy -y
   kubectl version --short --client
   ```
 
-  - Install **eksctl** (<a href="https://github.com/DevMadhup/DevOps-Tools-Installations/blob/main/eksctl%20/eksctl.sh">Setup eksctl</a>)
+  - Install **eksctl** (Master machine) (<a href="https://github.com/DevMadhup/DevOps-Tools-Installations/blob/main/eksctl%20/eksctl.sh">Setup eksctl</a>)
   ```bash
   curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
   sudo mv /tmp/eksctl /usr/local/bin
   eksctl version
   ```
   
-  - <b>Create EKS Cluster</b>
+  - <b>Create EKS Cluster (Master machine)</b>
   ```bash
   eksctl create cluster --name=wanderlust \
                       --region=us-west-1 \
                       --version=1.30 \
                       --without-nodegroup
   ```
-  - <b>Associate IAM OIDC Provider</b>
+  - <b>Associate IAM OIDC Provider (Master machine)</b>
   ```bash
   eksctl utils associate-iam-oidc-provider \
     --region us-west-1 \
     --cluster wanderlust \
     --approve
   ```
-  - <b>Create Nodegroup</b>
+  - <b>Create Nodegroup (Master machine)</b>
   ```bash
   eksctl create nodegroup --cluster=wanderlust \
                        --region=us-west-1 \
@@ -205,7 +145,74 @@ sudo apt-get install trivy -y
 > [!Note]
 >  Make sure the ssh-public-key "eks-nodegroup-key is available in your aws account"
 #
-- <b id="Argo">Install and Configure ArgoCD </b>
+- <b id="Jenkins-worker">Setting up jenkins worker node</b>
+  - Create a new EC2 instance (Jenkins Worker) with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage and install java on it
+  ```bash
+  sudo apt update -y
+  sudo apt install fontconfig openjdk-17-jre -y
+  ```
+  
+  - Configure AWSCLI (<a href="https://github.com/DevMadhup/DevOps-Tools-Installations/blob/main/AWSCLI/AWSCLI.sh">Setup AWSCLI</a>)
+  ```bash
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  sudo apt install unzip
+  unzip awscliv2.zip
+  sudo ./aws/install
+  aws configure
+  ```
+#
+  - <b>generate ssh keys (Jenkins Worker) to setup jenkins master-slave</b>
+  ```bash
+  ssh-keygen
+  ```
+  ![image](https://github.com/user-attachments/assets/0c8ecb74-1bc5-46f9-ad55-1e22e8092198)
+#
+  - <b>Now move to directory where your ssh keys are generated and copy the content of public key and paste to authorized_keys file of the worker machine.</b>
+#
+  - <b>Now, go to the jenkins master and navigate to <mark>Manage jenkins --> Nodes</mark>, and click on Add node </b>
+    - <b>name:</b> Node
+    - <b>type:</b> permanent agent
+    - <b>Number of executors:</b> 2
+    - Remote root directory
+    - <b>Labels:</b> Node
+    - <b>Usage:</b> Only build jobs with label expressions matching this node
+    - <b>Launch method:</b> Via ssh
+    - <b>Host:</b> \<public-ip-worker-jenkins\>
+    - <b>Credentials:</b> <mark>Add --> Kind: ssh username with private key --> ID: Worker --> Description: Worker --> Username: root --> Private key: Enter directly --> Add Private key</mark>
+    - <b>Host Key Verification Strategy:</b> Non verifying Verification Strategy
+    - <b>Availability:</b> Keep this agent online as much as possible
+#
+  - And your jenkins worker node is added
+  ![image](https://github.com/user-attachments/assets/cab93696-a4e2-4501-b164-8287d7077eef)
+
+# 
+- <b id="docker">Install docker (Jenkins Worker)</b>
+```bash
+sudo su
+```
+```bash
+apt update
+```
+```bash
+apt install docker.io -y
+usermod -aG docker ubuntu && newgrp docker
+```
+#
+- <b id="Sonar">Install and configure SonarQube (Jenkins Worker)</b>
+```bash
+docker run -itd --name SonarQube-Server -p 9000:9000 sonarqube:lts-community
+```
+#
+- <b id="Trivy">Install Trivy (Jenkins Worker)</b>
+```bash
+sudo apt-get install wget apt-transport-https gnupg lsb-release -y
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+sudo apt-get update -y
+sudo apt-get install trivy -y
+```
+#
+- <b id="Argo">Install and Configure ArgoCD (Master Machine)</b>
   - <b>Create argocd namespace</b>
   ```bash
   kubectl create namespace argocd
@@ -252,6 +259,7 @@ sudo apt-get install trivy -y
   kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
   ```
   - <b>Username: admin</b>
+  - <b> Now, go to <mark>User Info</mark> and update your argocd password
 #
 ## Steps to add email notification
 - <b id="Mail">Go to your Jenkins Master EC2 instance and allow 465 port number for SMTPS</b>
@@ -285,16 +293,17 @@ sudo apt-get install trivy -y
 
 #
 ## Steps to implement the project:
-- <b>Login to AWS console and make the metadata option <mark>optional</mark> of both the worker ec2 instances</b>
-
-![image](https://github.com/user-attachments/assets/2da425cf-b349-4c44-b796-7b964ae5a3bd)
-![image](https://github.com/user-attachments/assets/226b3d47-2f10-4b2e-b360-de3dc19c8856)
-#
 - <b>Go to Jenkins Master and click on <mark> Manage Jenkins --> Plugins --> Available plugins</mark> install the below plugins:</b>
+  - OWASP
   - SonarQube Scanner
   - Docker
   - Pipeline: Stage View
-![image](https://github.com/user-attachments/assets/6062c412-7d40-4170-8404-1e3056dfa669)
+#
+- <b id="Owasp">Configure OWASP, move to <mark>Manage Jenkins --> Plugins --> Available plugins</mark> (Jenkins Worker)</b>
+![image](https://github.com/user-attachments/assets/da6a26d3-f742-4ea8-86b7-107b1650a7c2)
+
+- <b id="Sonar">After OWASP plugin is installed, Now move to <mark>Manage jenkins --> Tools</mark> (Jenkins Worker)</b>
+![image](https://github.com/user-attachments/assets/3b8c3f20-202e-4864-b3b6-b48d7a604ee8)
 #
 - <b>Login to SonarQube server and create the credentials for jenkins to integrate with SonarQube</b>
   - Navigate to <mark>Administration --> Security --> Users --> Token</mark>
@@ -333,20 +342,20 @@ sudo apt-get install trivy -y
 #
 - <b>Create a <mark>Wanderlust-CI</mark> pipeline</b>
 ![image](https://github.com/user-attachments/assets/55c7b611-3c20-445f-a49c-7d779894e232)
-![image](https://github.com/user-attachments/assets/68ccb364-4926-4d4b-ad9b-f7abfdf9c99b)
+
 #
 - <b>Create one more pipeline <mark>Wanderlust-CD</mark></b>
 ![image](https://github.com/user-attachments/assets/23f84a93-901b-45e3-b4e8-a12cbed13986)
 ![image](https://github.com/user-attachments/assets/ac79f7e6-c02c-4431-bb3b-5c7489a93a63)
 ![image](https://github.com/user-attachments/assets/46a5937f-e06e-4265-ac0f-42543576a5cd)
 #
-- <b>Provide permission to docker socket so that docker build and push command do not fail</b>
+- <b>Provide permission to docker socket so that docker build and push command do not fail (Jenkins Worker)</b>
 ```bash
 chmod 777 /var/run/docker.sock
 ```
 ![image](https://github.com/user-attachments/assets/e231c62a-7adb-4335-b67e-480758713dbf)
 #
-- <b> Go to Master node and add our own eks cluster to argocd using cli</b>
+- <b> Go to Master Machine and add our own eks cluster to argocd for application deployment using cli</b>
   - <b>Login to argoCD from CLI</b>
   ```bash
    argocd login 52.53.156.187:32738 --username admin
@@ -376,8 +385,6 @@ chmod 777 /var/run/docker.sock
   ![image](https://github.com/user-attachments/assets/0f36aafd-bab9-4ef8-ba5d-3eb56d850604)
   - <b> Once your cluster is added to argocd, go to argocd console <mark>Settings --> Clusters</mark> and verify it</b>
   ![image](https://github.com/user-attachments/assets/4490b632-19fd-4499-a341-fabf8488d13c)
-#
-- <b>Now, login to ArgoCD and go to <mark>User Info</mark> and change your login password </b>
 #
 - <b>Go to <mark>Settings --> Repositories</mark> and click on <mark>Connect repo</mark> </b>
 ![image](https://github.com/user-attachments/assets/cc8728e5-546b-4c46-bd4c-538f4cd6a63d)
