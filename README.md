@@ -9,7 +9,7 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 
 ### In this demo, we will see how to deploy an end to end three tier MERN stack application on EKS cluster.
 #
-### <mark>Project Architecture</mark>
+### <mark>Project Deployment Flow:</mark>
 <img src="https://github.com/DevMadhup/Wanderlust-Mega-Project/blob/main/Assets/DevSecOps%2BGitOps.gif" />
 
 #
