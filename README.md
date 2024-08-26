@@ -192,12 +192,7 @@ sudo apt-get install jenkins -y
 
 # 
 - <b id="docker">Install docker (Jenkins Worker)</b>
-```bash
-sudo su
-```
-```bash
-apt update
-```
+
 ```bash
 apt install docker.io -y
 usermod -aG docker ubuntu && newgrp docker
