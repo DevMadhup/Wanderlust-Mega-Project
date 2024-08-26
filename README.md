@@ -50,6 +50,7 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 | OWASP setup | <a href="#Owasp">Install and configure OWASP</a>     |
 | SonarQube | <a href="#Sonar">Install and configure SonarQube</a>     |
 | Email Notification Setup | <a href="#Mail">Email notification setup</a>     |
+| Monitoring | <a href="#Monitor">Prometheus and grafana setup using helm charts</a>
 | Clean Up | <a href="#Clean">Clean up</a>     |
 #
 
@@ -416,7 +417,7 @@ chmod 777 /var/run/docker.sock
 
 #
 ## How to monitor EKS cluster, kubernetes components and workloads using prometheus and grafana via HELM
-- Install Helm Chart
+- <p id="Monitor">Install Helm Chart</p>
 ```bash
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 ```
