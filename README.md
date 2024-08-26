@@ -166,13 +166,13 @@ sudo apt-get install jenkins -y
   aws configure
   ```
 #
-  - <b>generate ssh keys (Jenkins Worker) to setup jenkins master-slave</b>
+  - <b>generate ssh keys (Master machine) to setup jenkins master-slave</b>
   ```bash
   ssh-keygen
   ```
   ![image](https://github.com/user-attachments/assets/0c8ecb74-1bc5-46f9-ad55-1e22e8092198)
 #
-  - <b>Now move to directory where your ssh keys are generated and copy the content of public key and paste to authorized_keys file of the worker machine.</b>
+  - <b>Now move to directory where your ssh keys are generated and copy the content of public key and paste to authorized_keys file of the Jenkins worker node.</b>
 #
   - <b>Now, go to the jenkins master and navigate to <mark>Manage jenkins --> Nodes</mark>, and click on Add node </b>
     - <b>name:</b> Node
