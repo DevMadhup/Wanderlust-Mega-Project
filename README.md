@@ -422,7 +422,7 @@ chmod 777 /var/run/docker.sock
 ![image](https://github.com/user-attachments/assets/0ab1ef47-f939-4618-8651-6aa9274721f4)
 
 #
-## How to monitor EKS cluster, kubernetes components and workloads using prometheus and grafana via HELM
+## How to monitor EKS cluster, kubernetes components and workloads using prometheus and grafana via HELM (On Master machine)
 - <p id="Monitor">Install Helm Chart</p>
 ```bash
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
