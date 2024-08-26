@@ -78,21 +78,26 @@ pipeline {
   post {
         always {
             script {
-                def subject = "Wanderlust Application has been updated and deployed"
-                def body = """
-                <p><b>Job Name:</b> ${env.JOB_NAME}</p>
-                <p><b>Latest Build Number:</b> ${env.BUILD_NUMBER}</p>
-                <p><b>Build Status:</b> ${currentBuild.currentResult}</p>
-                <p><b>Build URL:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                """
-
-                emailext(
-                    subject: subject,
-                    body: body,
-                    to: '8007930568pandey@gmail.com',
-                    from: '8007930568pandey@gmail.com',
-                    mimeType: 'text/html'
-                )
+                emailext attachLog: true,
+                subject: "Wanderlust Application has been updated and deployed - '${currentBuild.result}'",
+                body: """
+                    <html>
+                    <body>
+                        <div style="background-color: #FFA07A; padding: 10px; margin-bottom: 10px;">
+                            <p style="color: white; font-weight: bold;">Project: ${env.JOB_NAME}</p>
+                        </div>
+                        <div style="background-color: #90EE90; padding: 10px; margin-bottom: 10px;">
+                            <p style="color: white; font-weight: bold;">Build Number: ${env.BUILD_NUMBER}</p>
+                        </div>
+                        <div style="background-color: #87CEEB; padding: 10px; margin-bottom: 10px;">
+                            <p style="color: white; font-weight: bold;">URL: ${env.BUILD_URL}</p>
+                        </div>
+                    </body>
+                    </html>
+            """,
+            to: '8007930568pandey@gmail.com',
+            mimeType: 'text/html',
+            attachmentsPattern: 'trivy.txt'
             }
         }
     }
