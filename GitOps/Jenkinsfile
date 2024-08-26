@@ -79,6 +79,7 @@ pipeline {
         always {
             script {
                 emailext attachLog: true,
+                from: '8007930568pandey@gmail.com',
                 subject: "Wanderlust Application has been updated and deployed - '${currentBuild.result}'",
                 body: """
                     <html>
