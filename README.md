@@ -45,16 +45,20 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 | Docker  | <a href="#docker">Docker Install</a>    |
 | eksctl | <a href="#EKS">Install eksctl</a>     |
 | Jenkins Master | <a href="#Jenkins">Install and configure Jenkins</a>     |
-| Jenkins-Worker Setup | <a href="#Jenkins-worker">Install and configure Jenkins Worker Node</a>     |
-| SonarQube | <a href="#Sonar">Install and configure SonarQube</a>     |
 | Argocd | <a href="#Argo">Install and configure ArgoCD</a>     |
+| Jenkins-Worker Setup | <a href="#Jenkins-worker">Install and configure Jenkins Worker Node</a>     |
+| OWASP setup | <a href="#Owasp">Install and configure OWASP</a>     |
+| SonarQube | <a href="#Sonar">Install and configure SonarQube</a>     |
 | Email Notification Setup | <a href="#Mail">Email notification setup</a>     |
 | Clean Up | <a href="#Clean">Clean up</a>     |
-| OWASP setup | <a href="#Owasp">Install and configure OWASP</a>     |
 #
 
 ### Pre-requisites to implement this project:
 #
+- Root user access
+```bash
+sudo su
+```
 > [!Note]
 > This project will be implemented on North California region (us-west-1).
 
@@ -64,7 +68,6 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 > We are creating this master machine because we will configure Jenkins master, eksctl, EKS cluster creation from here.
 
 ```bash
-sudo su
 apt-get update
 ```
 ```bash
