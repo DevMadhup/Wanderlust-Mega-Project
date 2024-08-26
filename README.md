@@ -21,9 +21,9 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 - SonarQube (Quality)
 - Trivy (Filesystem Scan)
 - ArgoCD (CD)
-- Redis
+- Redis (Caching)
 - AWS EKS (Kubernetes)
-- Helm
+- Helm (Monitoring using grafana and prometheus)
 
 ### Demo of pipeline
 - <b>CI pipeline to build and push</b>
