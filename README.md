@@ -18,6 +18,7 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 - GitHub (Code)
 - Docker (Containerization)
 - Jenkins (CI)
+- OWASP (Dependency check)
 - SonarQube (Quality)
 - Trivy (Filesystem Scan)
 - ArgoCD (CD)
