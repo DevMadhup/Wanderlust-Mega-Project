@@ -1,0 +1,115 @@
+- 
+  name: Install and configure Jenkins, Docker, AWS CLI, kubectl, SonarQube, and ArgoCD on AWS Master Node
+  hosts: master
+  become: yes
+  tasks: 
+    - name: Update Apt Cache
+      apt:
+        update_cache: yes
+        state: present
+    
+    - name: Install Java 17
+      apt:
+        name: openjdk-17-jdk-headless
+        state: present
+
+    - name: Download Jenkins Repository Key
+      get_url:
+        url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+        dest: /usr/share/keyrings/jenkins-keyring.asc
+
+    - name: Add Jenkins Repository
+      apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/"
+        filename: jenkins.list
+        state: present
+
+    - name: Install Jenkins
+      apt:
+        name: jenkins
+        state: present
+        update_cache: yes
+
+    - name: Enable and Start Jenkins
+      service:
+        name: jenkins
+        state: started
+        enabled: yes
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Ensure Docker socket is Accessible
+      file:
+        path: /var/run/docker.sock
+        state: touch
+        mode: '0777'
+
+    - name: Install Docker Compose
+      apt:
+        name: docker-compose
+        state: present
+
+    - name: Download AWS CLI Installer
+      get_url:
+        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+        dest: /tmp/awscliv2.zip
+
+    - name: Install Zip and Unzip
+      apt:
+        name: 
+          - zip
+          - unzip
+        state: present
+
+    - name: Unzip AWS CLI Installer
+      unarchive:
+        src: /tmp/awscliv2.zip
+        dest: /tmp
+        remote_src: yes
+
+    - name: Install AWS CLI 
+      command: /tmp/aws/install
+
+    - name: Configure AWS CLI (Manual Step)
+      debug:
+        msg: "Run 'aws configure' manually to set up AWS credentials."
+
+    - name: Download Kubectl from AWS
+      get_url:
+        url: https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+        dest: /tmp/kubectl
+        mode: '0755'
+
+    - name: Move Kubectl to /usr/local/bin
+      command: mv /tmp/kubectl /usr/local/bin/kubectl
+
+    - name: Verify Kubectl Installation
+      command: kubectl version --short --client
+      register: kubectl_version
+      changed_when: false
+
+    - name: Display Kubectl version
+      debug:
+        var: kubectl_version.stdout
+
+    - name: Install Sonar Qube using Docker Container
+      docker_container:
+        name: sonarqube
+        image: sonarqube:lts-community 
+        ports:
+          - "9000:9000"
+        state: started
+        restart_policy: always
+
+    - name: Download ArgoCD CLI
+      get_url:
+        url: https://github.com/argoproj/argo-cd/releases/download/v2.4.7/argocd-linux-amd64
+        dest: /usr/local/bin/argocd
+        mode: '0755'
+
+    - name: Print Completetion Message
+      debug:
+        msg: "Jenkins, Docker, AWS CLI, kubectl, SonarQube, and ArgoCD have been installed and configured on the AWS Master Node."

@@ -24,6 +24,8 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 - ArgoCD (CD)
 - Redis (Caching)
 - AWS EKS (Kubernetes)
+- Terraform (Infrastructure Provisioning)
+- Ansible (Configuration Management)
 - Helm (Monitoring using grafana and prometheus)
 
 ### How pipeline will look after deployment:
@@ -42,12 +44,15 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 
 | Tech stack    | Installation |
 | -------- | ------- |
-| Jenkins Master | <a href="#Jenkins">Install and configure Jenkins</a>     |
-| eksctl | <a href="#EKS">Install eksctl</a>     |
+| Jenkins Master | <a href="#Jenkins-master">Create a Jenkins Master EC2 instance</a>     |
+| Jenkins-Worker | <a href="#Jenkins-worker">Create a Jenkins-Worker EC2 instance</a>     |
+| Bastion-Host | <a href="bastion">Create a Bastion Host to provision Clusters using terraform and Configure master and worker nodes using ansible</a>
+| Terraform | <a href="#terraform">Provision EKS Cluster with Terraform</a>     |
+| Ansible | <a href="#ansible">Perform Configuration Management on Jenkins Master and Jenkins Worker</a>     |
+| Jenkins Worker Setup| <a href="#jenkins-worker-setup">Setup Jenkins Worker as a node to run jobs in Jenkins Master.</a>     |
 | Argocd | <a href="#Argo">Install and configure ArgoCD</a>     |
-| Jenkins-Worker Setup | <a href="#Jenkins-worker">Install and configure Jenkins Worker Node</a>     |
 | OWASP setup | <a href="#Owasp">Install and configure OWASP</a>     |
-| SonarQube | <a href="#Sonar">Install and configure SonarQube</a>     |
+| SonarQube | <a href="#Sonar">Configure SonarQube</a>     |
 | Email Notification Setup | <a href="#Mail">Email notification setup</a>     |
 | Monitoring | <a href="#Monitor">Prometheus and grafana setup using helm charts</a>
 | Clean Up | <a href="#Clean">Clean up</a>     |
@@ -60,128 +65,156 @@ WanderLust is a simple MERN travel blog website ✈ This project is aimed to hel
 sudo su
 ```
 > [!Note]
-> This project will be implemented on North California region (us-west-1).
+> This project will be implemented on Mumbai region (ap-south-1).
 
-- <b>Create 1 Master machine on AWS with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage and install Docker on it.</b>
+This instance primary use is to launch the EKS cluster using Terraform and 
+
+- <b id="Jenkins-master">Create 1 Master machine on AWS with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage.</b>
 #
 - <b>Open the below ports in security group of master machine and also attach same security group to Jenkins worker node (We will create worker node shortly)</b>
 ![image](https://github.com/user-attachments/assets/4e5ecd37-fe2e-4e4b-a6ba-14c7b62715a3)
 
 > [!Note]
-> We are creating this master machine because we will configure Jenkins master, eksctl, EKS cluster creation from here.
+> We are creating this master machine because we will configure Jenkins master on this machine.
 
-Install & Configure Docker by using below command, "NewGrp docker" will refresh the group config hence no need to restart the EC2 machine.
+- <b id="Jenkins-Worker">Create 1 Jenkins Worker Instance on AWS with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage.</b>
 
-```bash
-apt-get update
-```
-```bash
-apt-get install docker.io -y
-usermod -aG docker ubuntu && newgrp docker
-```
-#
-- <b id="Jenkins">Install and configure Jenkins (Master machine)</b>
-```bash
-sudo apt update -y
-sudo apt install fontconfig openjdk-17-jre -y
-
-sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
-  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
-  
-echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
-  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
-  /etc/apt/sources.list.d/jenkins.list > /dev/null
-  
-sudo apt-get update -y
-sudo apt-get install jenkins -y
-```
-- <b>Now, access Jenkins Master on the browser on port 8080 and configure it</b>.
-#
-- <b id="EKS">Create EKS Cluster on AWS (Master machine)</b>
-  - IAM user with **access keys and secret access keys**
-  - AWSCLI should be configured (<a href="https://github.com/DevMadhup/DevOps-Tools-Installations/blob/main/AWSCLI/AWSCLI.sh">Setup AWSCLI</a>)
-  ```bash
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-  sudo apt install unzip
-  unzip awscliv2.zip
-  sudo ./aws/install
-  aws configure
-  ```
-
-  - Install **kubectl** (Master machine)(<a href="https://github.com/DevMadhup/DevOps-Tools-Installations/blob/main/Kubectl/Kubectl.sh">Setup kubectl </a>)
-  ```bash
-  curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
-  chmod +x ./kubectl
-  sudo mv ./kubectl /usr/local/bin
-  kubectl version --short --client
-  ```
-
-  - Install **eksctl** (Master machine) (<a href="https://github.com/DevMadhup/DevOps-Tools-Installations/blob/main/eksctl%20/eksctl.sh">Setup eksctl</a>)
-  ```bash
-  curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-  sudo mv /tmp/eksctl /usr/local/bin
-  eksctl version
-  ```
-  
-  - <b>Create EKS Cluster (Master machine)</b>
-  ```bash
-  eksctl create cluster --name=wanderlust \
-                      --region=us-west-1 \
-                      --version=1.30 \
-                      --without-nodegroup
-  ```
-  - <b>Associate IAM OIDC Provider (Master machine)</b>
-  ```bash
-  eksctl utils associate-iam-oidc-provider \
-    --region us-west-1 \
-    --cluster wanderlust \
-    --approve
-  ```
-  - <b>Create Nodegroup (Master machine)</b>
-  ```bash
-  eksctl create nodegroup --cluster=wanderlust \
-                       --region=us-west-1 \
-                       --name=wanderlust \
-                       --node-type=t2.large \
-                       --nodes=2 \
-                       --nodes-min=2 \
-                       --nodes-max=2 \
-                       --node-volume-size=29 \
-                       --ssh-access \
-                       --ssh-public-key=eks-nodegroup-key 
-  ```
 > [!Note]
->  Make sure the ssh-public-key "eks-nodegroup-key is available in your aws account"
-#
-- <b id="Jenkins-worker">Setting up jenkins worker node</b>
-  - Create a new EC2 instance (Jenkins Worker) with 2CPU, 8GB of RAM (t2.large) and 29 GB of storage and install java on it
-  ```bash
-  sudo apt update -y
-  sudo apt install fontconfig openjdk-17-jre -y
-  ```
-  - Create an IAM role with <mark>administrator access</mark> attach it to the jenkins worker node <mark>Select Jenkins worker node EC2 instance --> Actions --> Security --> Modify IAM role</mark>
-  ![image](https://github.com/user-attachments/assets/1a9060db-db11-40b7-86f0-47a65e8ed68b)
+> We are creating this worker machine because we will run Jenkins jobs on this machine.
 
-  - Configure AWSCLI (<a href="https://github.com/DevMadhup/DevOps-Tools-Installations/blob/main/AWSCLI/AWSCLI.sh">Setup AWSCLI</a>)
-  ```bash
-  sudo su
-  ```
-  ```bash
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-  sudo apt install unzip
-  unzip awscliv2.zip
-  sudo ./aws/install
-  aws configure
-  ```
-#
-  - <b>generate ssh keys (Master machine) to setup jenkins master-slave</b>
-  ```bash
-  ssh-keygen
-  ```
-  ![image](https://github.com/user-attachments/assets/0c8ecb74-1bc5-46f9-ad55-1e22e8092198)
-#
-  - <b>Now move to directory where your ssh keys are generated and copy the content of public key and paste to authorized_keys file of the Jenkins worker node.</b>
-#
+After creating these 2 ec2 instances , we will configure Jenkins master and Jenkins worker using Ansible, and Provision EKS cluster on AWS using Terraform.
+
+- <b id="bastion"> Create 1 Bastion Machine on AWS with 2CPU, 2GB of RAM (t2.small) and 8GB of storage.</b>
+
+> [!Note]
+> We are creating this bastion machine because we will use this machine to provision EKS cluster using terraform and configure master and worker nodes using ansible.
+
+Install Terraform, Ansible, and AWS CLI in the bastion machine 
+
+1. Install AWS CLI
+```bash
+#Installing AWS CLI
+sudo apt update
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+sudo apt install unzip
+unzip awscliv2.zip
+sudo ./aws/install
+```
+
+- Configure AWS CLI with Access key
+```bash
+aws configure
+```
+- Input the aws credentials of the IAM user
+<b>Access Key</b>
+<b>Secret Key</b>
+<b>Set the Region</b>
+
+
+2. Install Terraform 
+```bash
+sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+wget -O- https://apt.releases.hashicorp.com/gpg | \
+gpg --dearmor | \
+sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
+gpg --no-default-keyring \
+--keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+--fingerprint
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt update
+sudo apt-get install terraform -y
+```
+
+3. Install Ansible
+```bash
+#Installing Ansible
+sudo apt update
+ sudo apt install software-properties-common
+ sudo apt-add-repository --yes --update ppa:ansible/ansible
+ sudo apt install ansible -y
+```
+
+After Installing these tools, we will use them to provision EKS cluster and configure master and worker nodes.
+
+- Clone this Repository in the VM to get the access of those terraform files and ansible configurations.
+```bash
+git clone https://github.com/rcheeez/Wanderlust-Mega-Project.git
+```
+
+- <b id="terraform">Run terraform to provision EKS cluster</b>
+
+```bash
+cd terraform
+terraform init
+terraform plan
+terraform apply 
+```
+
+Writing these commands, will provision EKS cluster on AWS Cloud.
+
+> [!Note]
+>  Make sure the ssh-public-key "ec2-key-pair" is available in your aws account"
+
+<img src="./Assets/terraform-provisioning.png">
+
+
+# <b id="ansible">Run Ansible to configure master and worker nodes</b>
+
+Let's first configure the hosts file in the ansible directory to point to the master and worker nodes. We will use the IP addresses of the master and worker nodes.
+
+you can locate this file at /etc/ansible/hosts
+
+You have to update this file with this data.
+
+```ini
+[master]
+master_server ansible_host= <public-ip-address>
+
+[agent]
+worker_server ansible_host= <public-ip-address>
+
+[all-vars]
+ansible_python_interpreter=/usr/bin/python3
+ansible_user=ubuntu
+ansible_ssh_private_key_file=/home/ubuntu/keys/<key-pair-name> #ec2-key-pair.pem 
+```
+
+> [!Note]
+> Give a decent access to the private key (.pem) file to run perfectly.
+
+```bash
+sudo chmod 600 <key-pair-pem-file>
+```
+
+Now, let's run the playbook to configure the master and worker nodes.
+
+- Run this command first to install collection of community.docker so that ansible can also create containers inside the vm
+
+```bash
+ansible-galaxy collection install community.docker
+```
+
+- Now run the final command to start the configurations in the VMs
+```bash
+ansible-playbook -i /etc/ansible/hosts master_server_play.yml # to run the configurations in the jenkins master
+ansible-playbook -i /etc/ansible/hosts agent_server_play.yml # to run the configurations in the jenkins worker
+```
+Jenkins Master Configuration
+<img src="./Assets/ansible-master-installation.png">
+<br>
+<br>
+Jenkins Worker Configuration
+<img src="./Assets/ansible-worker-installation.png">
+> [!Note]
+> Make sure the master and worker nodes are up and running before running the playbook. Also, make sure the ssh-public-key "ec2-key-pair" is available in your aws account. 
+
+This will setup all the configuration on those 2 EC2 instances.
+
+After that let's setup the worker instance as a Jenkins Agent to run Jobs.
+
+# Jenkins Worker Setup in Jenkins
   - <b>Now, go to the jenkins master and navigate to <mark>Manage jenkins --> Nodes</mark>, and click on Add node </b>
     - <b>name:</b> Node
     - <b>type:</b> permanent agent
@@ -198,29 +231,9 @@ sudo apt-get install jenkins -y
   - And your jenkins worker node is added
   ![image](https://github.com/user-attachments/assets/cab93696-a4e2-4501-b164-8287d7077eef)
 
-# 
-- <b id="docker">Install docker (Jenkins Worker)</b>
-
-```bash
-apt install docker.io -y
-usermod -aG docker ubuntu && newgrp docker
-```
+After setting up the eks cluster infrastructure on AWS cloud using terraform we can Configure Argo CD by creating Namespace, applying manifests and changing the service Type to NodePort.
 #
-- <b id="Sonar">Install and configure SonarQube (Master machine)</b>
-```bash
-docker run -itd --name SonarQube-Server -p 9000:9000 sonarqube:lts-community
-```
-#
-- <b id="Trivy">Install Trivy (Jenkins Worker)</b>
-```bash
-sudo apt-get install wget apt-transport-https gnupg lsb-release -y
-wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
-sudo apt-get update -y
-sudo apt-get install trivy -y
-```
-#
-- <b id="Argo">Install and Configure ArgoCD (Master Machine)</b>
+- <b id="Argo">Configure ArgoCD</b>
   - <b>Create argocd namespace</b>
   ```bash
   kubectl create namespace argocd
@@ -234,13 +247,7 @@ sudo apt-get install trivy -y
   watch kubectl get pods -n argocd
   ```
   - <b>Install argocd CLI</b>
-  ```bash
-  curl --silent --location -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.4.7/argocd-linux-amd64
-  ```
-  - <b>Provide executable permission</b>
-  ```bash
-  chmod +x /usr/local/bin/argocd
-  ```
+  This has been already installed using Ansible in the Jenkins master machine with executive permissions.
   - <b>Check argocd services</b>
   ```bash
   kubectl get svc -n argocd

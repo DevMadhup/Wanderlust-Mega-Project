@@ -1,0 +1,99 @@
+-
+  name: Install and Configure Java, Docker, AWS CLI, and Trivy on worker instances
+  hosts: agent
+  become: yes
+  tasks: 
+    - name: Update Apt Cache
+      apt:
+        update_cache: yes
+    
+    - name: Install Java 17
+      apt:
+        name: openjdk-17-jdk-headless
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+    
+    - name: Ensure Docker socket is accessible
+      file:
+        path: /var/run/docker.sock
+        mode: '0777'
+        state: touch
+
+    - name: Install Docker Compose
+      apt:
+        name: docker-compose
+        state: present
+
+    - name: Download AWS CLI Installer
+      get_url:
+        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+        dest: /tmp/awscliv2.zip
+
+    - name: Install Zip and Unzip
+      apt:
+        name: 
+          - zip
+          - unzip
+        state: present
+
+    - name: Unzip AWS CLI Installer
+      unarchive:
+        src: /tmp/awscliv2.zip
+        dest: /tmp
+        remote_src: yes
+
+    - name: Install AWS CLI 
+      command: /tmp/aws/install
+
+    - name: Configure AWS CLI (Manual Step)
+      debug:
+        msg: "Run 'aws configure' manually to set up AWS credentials."
+
+    - name: Download Kubectl from AWS
+      get_url:
+        url: https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+        dest: /tmp/kubectl
+        mode: '0755'
+
+    - name: Move Kubectl to /usr/local/bin
+      command: mv /tmp/kubectl /usr/local/bin/kubectl
+
+    - name: Verify Kubectl Installation
+      command: kubectl version --short --client
+      register: kubectl_version
+      changed_when: false
+
+    - name: Display Kubectl version
+      debug:
+        var: kubectl_version.stdout
+
+    - name: Install Dependencies for Trivy
+      apt:
+        name:
+          - wget
+          - apt-transport-https
+          - gnupg
+          - lsb-release
+        state: present
+
+    - name: Add Trivy GPG
+      shell: | 
+        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+
+    - name: Add Trivy Repository
+      shell: |
+        echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+
+    - name: Install Trivy
+      apt:
+        name: trivy
+        state: present
+        update_cache: yes
+
+    - name: Print Completed Message
+      debug:
+        msg: "Java, Docker, AWS CLI, and Trivy have been installed and configured on the worker instance."
