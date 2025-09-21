@@ -1,39 +1,50 @@
 version: "3.8"
+
 services:
   mongodb:
-    container_name: mongo
     image: mongo:latest
+    container_name: mongo
     volumes:
       - ./backend/data:/data
     ports:
       - "27017:27017"
+    networks:
+      - backend-network
+
+  redis:
+    image: redis:7.0.5-alpine 
+    container_name: redis
+    restart: unless-stopped
+    expose:
+      - 6379
+    networks:
+      - backend-network
 
   backend:
-    container_name: backend
     build: ./backend
+    container_name: backend
     env_file:
       - ./backend/.env.docker
     ports:
       - "5000:5000"
     depends_on:
       - mongodb
+      - redis
+    networks:
+      - backend-network
 
   frontend:
-    container_name: frontend
     build: ./frontend
+    container_name: frontend
     env_file:
       - ./frontend/.env.docker
     ports:
       - "5173:5173"
-
-  redis:
-    container_name: redis
-    restart: unless-stopped
-    image: redis:7.0.5-alpine 
-    expose:
-        - 6379
-    depends_on:
-      - mongodb
+    networks:
+      - backend-network
 
 volumes:
   data:
+
+networks:
+  backend-network:

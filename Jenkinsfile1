@@ -1,0 +1,81 @@
+pipeline {
+    agent any
+    environment {
+        SONAR_HOME = tool "Sonar"
+    }
+    stages {
+        stage("Clone Code from GitHub") {
+            steps {
+                git url: "https://github.com/Sufiyan12421/Wanderlust-Mega-Project.git", branch: "main"
+            }
+        }
+
+        stage("SonarQube Quality Analysis") {
+            steps {
+                withSonarQubeEnv("Sonar") {
+                    sh """
+                        $SONAR_HOME/bin/sonar-scanner \
+                        -Dsonar.projectKey=wanderlust \
+                        -Dsonar.projectName=wanderlust
+                    """
+                }
+            }
+        }
+
+        stage("OWASP Dependency Check") {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'dc'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+
+        stage("Sonar Quality Gate Scan") {
+            steps {
+                timeout(time: 2, unit: "MINUTES") {
+                    waitForQualityGate abortPipeline: false
+                }
+            }
+        }
+
+        stage("Trivy File System Scan") {
+            steps {
+                sh "trivy fs ./ --format table -o trivy-fs-report.html"
+                archiveArtifacts artifacts: 'trivy-fs-report.html', allowEmptyArchive: true
+            }
+        }
+
+        stage("Deploy Using Docker Compose") {
+            steps {
+                sh '''
+            # Detect docker-compose command (v1 vs v2)
+            if command -v docker-compose >/dev/null 2>&1; then
+                COMPOSE_CMD="docker-compose"
+            else
+                COMPOSE_CMD="docker compose"
+            fi
+
+            echo "Using compose command: $COMPOSE_CMD"
+
+            # Stop and remove all old containers, networks, volumes for this compose project
+            $COMPOSE_CMD down --remove-orphans || true
+
+            # Remove any stale backend container by name (just in case)
+            docker rm -f backend || true
+
+            # Pull latest images
+            $COMPOSE_CMD pull
+
+            # Build fresh images without cache
+            $COMPOSE_CMD build --no-cache
+
+            # Start services in detached mode, recreating containers
+            $COMPOSE_CMD up -d --force-recreate
+
+            # Capture logs from backend only (or all if you want)
+            $COMPOSE_CMD logs backend > backend-logs.txt || true
+        '''
+        archiveArtifacts artifacts: 'backend-logs.txt', allowEmptyArchive: true
+         }  
+        }
+    }
+}
