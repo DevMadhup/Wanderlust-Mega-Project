@@ -23,7 +23,7 @@ spec:
             - containerPort: 6379
           volumeMounts:
             - name: redis-storage
-              mountPath: /data
+              mountPath: /data/redis
       volumes:
         - name: redis-storage
           persistentVolumeClaim:

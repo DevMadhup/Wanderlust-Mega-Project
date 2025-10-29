@@ -10,7 +10,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /data/mongo
+    path: /data/db
 
 ---
 # Redis PersistentVolume
