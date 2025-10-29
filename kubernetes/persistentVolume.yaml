@@ -1,3 +1,4 @@
+# Mongo PersistentVolume
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -6,8 +7,22 @@ metadata:
 spec:
   capacity:
     storage: 5Gi
-  volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
   hostPath:
     path: /data/db
+
+---
+# Redis PersistentVolume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-pv
+  namespace: wanderlust
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data/redis
