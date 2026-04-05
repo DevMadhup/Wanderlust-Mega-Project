@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wander-backend
+  namespace: wanderlust
+  labels:
+    app: wanderlust
+    tier: backend
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: backend
+  template:
+    metadata:
+      labels:
+        tier: backend
+    spec:
+      containers:
+      - name: backend
+        image: dooms002/wanderlust-backend:54
+        ports:
+        - containerPort: 8080
+        
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-svc
+  namespace: wanderlust
+spec:
+  type: NodePort
+  selector:
+    tier: backend
+  ports:
+    - protocol: TCP
+      targetPort: 8080
+      port: 8080
+      nodePort: 31100

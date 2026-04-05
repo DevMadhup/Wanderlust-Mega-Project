@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wander-frontend
+  namespace: wanderlust
+  labels:
+    app: wanderlust
+    tier: frontend
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: dooms002/wanderlust-frontend:54
+        ports:
+        - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-svc
+  namespace: wanderlust
+spec:
+  type: NodePort
+  selector:
+    tier: frontend
+  ports:
+    - protocol: TCP
+      targetPort: 80
+      port: 80
+      nodePort: 31000
